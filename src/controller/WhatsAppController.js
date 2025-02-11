@@ -209,6 +209,8 @@ export class WhatsAppController {
 
                 let me = (data.from === this._user.email);
 
+                let view = message.getViewElement(me);
+
                 if (!this.el.panelMessagesContainer.querySelector('#_' + data.id)) {
 
                     if (!me) {
@@ -221,11 +223,20 @@ export class WhatsAppController {
 
                     }
 
-                    let view = message.getViewElement(me);
 
                     this.el.panelMessagesContainer.appendChild(view);
 
                 } else {
+
+
+                    let parent = this.el.panelMessagesContainer.querySelector('#_' + data.id).parentNode;
+
+                    parent.replaceChild(view, this.el.panelMessagesContainer.querySelector('#_' + data.id))
+
+                }
+
+                if (this.el.panelMessagesContainer.querySelector('#_' + data.id) && me) {
+
 
                     let msgEl = this.el.panelMessagesContainer.querySelector('#_' + data.id);
 
@@ -233,7 +244,35 @@ export class WhatsAppController {
 
                 }
 
+                if (message.type === 'contact') {
+
+                    view.querySelector('.btn-message-send').on('click', e => {
+
+                        Chat.createIfNotExists(this._user.email, message.content.email).then(chat => {
+
+                            let contact = new User(message.content.email);
+
+                            contact.on('datachange', data => {
+
+                                contact.chatId = chat.id;
+
+                                this._user.addContact(contact);
+
+                                this._user.chatId = chat.id;
+
+                                contact.addContact(this._user);
+
+                                this.setActiveChat(contact);
+
+                            })
+
+                        });
+
+                    });
+                }
+
             });
+
             if (autoScroll) {
 
                 this.el.panelMessagesContainer.scrollTop = (this.el.panelMessagesContainer.scrollHeight - this.el.panelMessagesContainer.offsetHeight);
