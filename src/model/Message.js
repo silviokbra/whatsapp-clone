@@ -48,6 +48,8 @@ export class Message extends Model {
 
         let div = document.createElement('div');
 
+        div.id = `_${this.id}`;
+
         div.className = 'message';
 
         switch (this.type) {
@@ -78,7 +80,7 @@ export class Message extends Model {
                                 </div>
                                 <div class="_1lC8v">
                                     <div dir="ltr" class="_3gkvk selectable-text invisible-space copyable-text">
-                                        Nome do Contato Anexado</div>
+                                        ${this.content.name}</div>
                                 </div>
                                 <div class="_3a5-b">
                                     <div class="_1DZAH" role="button">
@@ -94,6 +96,21 @@ export class Message extends Model {
 
                     </div>
                 `;
+
+                if (this.content.photo) {
+
+                    let img = div.querySelector('.photo-contact-sended');
+                    img.src = this.content.photo;
+                    img.show();
+
+                }
+
+                div.querySelector('.btn-message-send').on('click', e => {
+
+                    console.log('Enviar msg');
+
+                });
+
 
                 break;
 
@@ -201,6 +218,12 @@ export class Message extends Model {
 
                 `;
 
+                div.on('click', e => {
+
+                    window.open(this.content)
+
+                });
+
                 break;
 
             case 'audio':
@@ -293,7 +316,7 @@ export class Message extends Model {
 
             default:
                 div.innerHTML = `
-                                <div class="font-style _3DFk6 tail" id="_${this.id}>
+                                <div class="font-style _3DFk6 tail" >
                                     <span class="tail-container"></span>
                                     <span class="tail-container highlight"></span>
                                     <div class="Tkt2p">
@@ -326,18 +349,18 @@ export class Message extends Model {
 
     }
 
-    static upload(from, file) { 
+    static upload(from, file) {
 
         return new Promise((s, f) => {
 
-            let uploadTask = Firebase.hd().ref(from).child(Date.now() + '_' + file.name).put(file); 
+            let uploadTask = Firebase.hd().ref(from).child(Date.now() + '_' + file.name).put(file);
 
             uploadTask.on('state_changed', e => {
 
                 // console.info('upload', e);
 
-            }, err => { 
-                console.error(err) 
+            }, err => {
+                console.error(err)
             }, () => {
 
                 uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
@@ -350,44 +373,51 @@ export class Message extends Model {
 
     }
 
-    static sendDocument(chatId, from, documentFile, imageFile, pdfInfo) { 
+    static sendContact(chatId, from, contact) {
 
-        return Message.send(chatId, from, 'document', '', false).then(msgRef => { 
+        return Message.send(chatId, from, 'contact', contact);
 
-            Message.upload(from, documentFile).then(downloadURL => { 
+    }
 
-                let fileDocumentDownload = downloadURL; 
 
-                if (imageFile) { 
+    static sendDocument(chatId, from, documentFile, imageFile, pdfInfo) {
 
-                    Message.upload(from, imageFile).then(downloadURL2 => { 
+        return Message.send(chatId, from, 'document', '', false).then(msgRef => {
 
-                        let fileImageDownload = downloadURL2; 
+            Message.upload(from, documentFile).then(downloadURL => {
 
-                        msgRef.set({ 
-                            content: fileDocumentDownload, 
-                            preview: fileImageDownload, 
-                            filename: documentFile.name, 
-                            size: documentFile.size, 
-                            info: pdfInfo, 
-                            fileType: documentFile.type, 
-                            status: 'sent' 
+                let fileDocumentDownload = downloadURL;
+
+                if (imageFile) {
+
+                    Message.upload(from, imageFile).then(downloadURL2 => {
+
+                        let fileImageDownload = downloadURL2;
+
+                        msgRef.set({
+                            content: fileDocumentDownload,
+                            preview: fileImageDownload,
+                            filename: documentFile.name,
+                            size: documentFile.size,
+                            info: pdfInfo,
+                            fileType: documentFile.type,
+                            status: 'sent',
                         }, {
-                            merge: true 
+                            merge: true
                         });
 
                     });
 
-                } else { 
+                } else {
 
-                    msgRef.set({ 
-                        content: fileDocumentDownload, 
-                        filename: documentFile.name, 
-                        size: documentFile.size, 
-                        fileType: documentFile.type, 
-                        status: 'sent' 
+                    msgRef.set({
+                        content: fileDocumentDownload,
+                        filename: documentFile.name,
+                        size: documentFile.size,
+                        fileType: documentFile.type,
+                        status: 'sent'
                     }, {
-                        merge: true 
+                        merge: true
                     });
 
                 }

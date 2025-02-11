@@ -7,6 +7,7 @@ import { User } from './../model/User';
 import { Chat } from './../model/Chat'
 import { Message } from './../model/Message'
 import { Base64 } from "../util/Base64";
+import { ContactsController } from '../controller//ContactsController';
 
 export class WhatsAppController {
 
@@ -694,13 +695,23 @@ export class WhatsAppController {
 
         this.el.btnAttachContact.on('click', e => {
 
-            this.el.modalContacts.show();
+            this._contactsController = new ContactsController(this.el.modalContacts, this._user);
+
+            this._contactsController.open();
+
+            this._contactsController.on('select', doc => {
+
+                Message.sendContact(this._contactActive.chatId, this._user.email, doc);
+
+                this._contactsController.close();
+
+            });
 
         });
 
         this.el.btnCloseModalContacts.on('click', e => {
 
-            this.el.modalContacts.hide();
+            this._contactsController.close();
 
         });
 
