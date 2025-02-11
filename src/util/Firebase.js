@@ -10,7 +10,7 @@ export class Firebase {
             apiKey: "AIzaSyDq7omIfs5LYrtRWesQLJ7aO3gUmYxOW2k",
             authDomain: "whatsapp-clone-808d8.firebaseapp.com",
             projectId: "whatsapp-clone-808d8",
-            storageBucket: "whatsapp-clone-808d8.firebasestorage.app",
+            storageBucket: "gs://whatsapp-clone-808d8.firebasestorage.app",
             messagingSenderId: "254439604655",
             appId: "1:254439604655:web:20ae2ada812d1845ff6f5a",
             measurementId: "G-PHR5R86SVJ"
@@ -19,9 +19,9 @@ export class Firebase {
     }
 
     init() {
-   
+
         if (!window._initializedFirebase) {
-        
+
             firebase.initializeApp(this._config);
             firebase.firestore().settings({
                 timestampsInSnapshots: true

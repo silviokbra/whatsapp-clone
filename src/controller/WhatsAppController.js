@@ -105,7 +105,7 @@ export class WhatsAppController {
                                     <span dir="auto" title="${contact.name}" class="_1wjpf">${contact.name}</span>
                                 </div>
                                 <div class="_3Bxar">
-                                    <span class="_3T2VG">${contact.lastMessageTime}</span>
+                                    <span class="_3T2VG">${Format.timeStampToTime(contact.lastMessageTime)}</span>
                                 </div>
                             </div>
                             <div class="_1AwDx">
@@ -487,10 +487,11 @@ export class WhatsAppController {
 
         this.el.inputPhoto.on('change', e => {
 
-            console.log(this.el.inputPhoto.files);
+
             [...this.el.inputPhoto.files].forEach(file => {
 
-                console.log(file);
+                Message.sendImage(this._contactActive.chatId, this._user.email, file);
+
             });
 
         });
