@@ -7,10 +7,10 @@ export class MicrophoneController extends ClassEvent {
 
         super();
 
-        // mimetype padrão para gravação no google chrome
+        
         this._mimetype = 'audio/webm'
 
-        // flag para previnir de começar a gravar sem o stream estar disponível
+        
         this._available = false;
 
         navigator.mediaDevices.getUserMedia({
@@ -34,18 +34,14 @@ export class MicrophoneController extends ClassEvent {
         return this._available;
     }
 
-    /**
-     * Pára todos os tracks ds áudio.
-     */
+
     stop() {
         this._stream.getTracks().forEach(track => {
             track.stop();
         });
     }
 
-    /**
-     * Inicia a gravação do microfone.
-     */
+
     startRecorder() {
 
         if (this.isAvailable()) {
@@ -54,18 +50,16 @@ export class MicrophoneController extends ClassEvent {
                 mimeType: this._mimetype
             });
 
-            // é preciso guardar a informação enviada "em partes" na ordem correta
+
             this._recordedChuncks = [];
 
             this._mediaRecorder.addEventListener('dataavailable', e => {
                 if (e.data.size > 0) this._recordedChuncks.push(e.data);
             });
 
-            // quando parar de gravar, deve-se pegar todos os pedaços de gravação
-            // e transformar num único arquivo
+
             this._mediaRecorder.addEventListener('stop', e => {
 
-                // blob = binary large object
                 let blob = new Blob(this._recordedChuncks, {
                     type: this._mimetype
                 });
@@ -98,9 +92,6 @@ export class MicrophoneController extends ClassEvent {
         }
     }
 
-    /**
-     * Pára uma gravação do microfone em andamento.
-     */
     stopRecorder() {
 
         if (this.isAvailable()) {
@@ -111,20 +102,14 @@ export class MicrophoneController extends ClassEvent {
         }
     }
 
-    /**
-     * Inicia o timer de gravação de áudio.
-     */
     startTimer() {
         let start = Date.now();
 
         this._recordMicrophoneInterval = setInterval(()=> {
             this.trigger('recordtimer', Date.now() - start);
-        }, 100); // 100 = 10x por segundo
+        }, 100); 
     }
 
-    /**
-     * Pára o timer de gravação de áudio.
-     */
     stopTimer() {
         clearInterval(this._recordMicrophoneInterval);
     }
