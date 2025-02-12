@@ -8,71 +8,64 @@ export class Message extends Model {
 
     constructor() {
 
-        // Como temos um extends, temos que ter o super
+
         super();
 
     }
 
 
-    // ******* Criando os nossos getteres e setteres ******
-    // **************** Getteres *********************** //
+    get id() { return this._data.id }
+    set id(value) { this._data.id = value }
 
-    // ID da mensagem
-    get id() { return this._data.id}
-    set id(value) {this._data.id = value}
+    get content() { return this._data.content }
+    set content(value) { this._data.content = value }
 
-    // Teremos os conteúdos
-    get content() { return this._data.content}
-    set content(value) {this._data.content = value}
+    get type() { return this._data.type }
+    set type(value) { this._data.type = value }
 
-    // Tipo da mensagem
-    get type() { return this._data.type}
-    set type(value) {this._data.type = value}
 
-    // Data e Hora
-    get timeStamp() { return this._data.timeStamp}
-    set timeStamp(value) {this._data.timeStamp = value}
+    get timeStamp() { return this._data.timeStamp }
+    set timeStamp(value) { this._data.timeStamp = value }
 
-    // Status da mensagem
-    get status() { return this._data.status}
-    set status(value) {this._data.status = value}
 
-    get preview() { return this._data.preview}
-    set preview(value) {this._data.preview = value}
+    get status() { return this._data.status }
+    set status(value) { this._data.status = value }
 
-    get info() { return this._data.info}
-    set info(value) {this._data.info = value}
+    get preview() { return this._data.preview }
+    set preview(value) { this._data.preview = value }
 
-    get fileType() { return this._data.fileType}
-    set fileType(value) {this._data.fileType = value}
+    get info() { return this._data.info }
+    set info(value) { this._data.info = value }
 
-    get from() { return this._data.from}
-    set from(value) {this._data.from = value}
+    get fileType() { return this._data.fileType }
+    set fileType(value) { this._data.fileType = value }
 
-    get size() { return this._data.size}
-    set size(value) {this._data.size = value}
+    get from() { return this._data.from }
+    set from(value) { this._data.from = value }
 
-    get filename() { return this._data.filename}
-    set filename(value) {this._data.filename = value}
+    get size() { return this._data.size }
+    set size(value) { this._data.size = value }
 
-    get photo() { return this._data.photo}
-    set photo(value) {this._data.photo = value}
+    get filename() { return this._data.filename }
+    set filename(value) { this._data.filename = value }
 
-    get duration() { return this._data.duration}
-    set duration(value) {this._data.duration = value}
+    get photo() { return this._data.photo }
+    set photo(value) { this._data.photo = value }
 
-    // Criando um método para monstar a mensagem dependendo do tipo da mensagem
-    getViewElement(me = true){
+    get duration() { return this._data.duration }
+    set duration(value) { this._data.duration = value }
 
-        // Preparrando o htmls que iremos retornar
+    getViewElement(me = true) {
+
+
         let div = document.createElement('div')
 
-        // Para não receber mensagens duplicadas
+
         div.id = `_${this.id}`
 
-        div.className ='message'
+        div.className = 'message'
 
-        switch(this.type) {
+        switch (this.type) {
 
             case 'contact':
                 div.innerHTML = `
@@ -112,13 +105,13 @@ export class Message extends Model {
                     </div>
                 `;
 
-                if(this.content.photo) {
+                if (this.content.photo) {
 
                     let img = div.querySelector('.photo-contact-sended');
                     img.src = this.content.photo;
                     img.show();
 
-                }                
+                }
 
                 break;
 
@@ -230,7 +223,7 @@ export class Message extends Model {
 
                     });
 
-                    
+
 
                 })
                 break;
@@ -315,7 +308,7 @@ export class Message extends Model {
 
                 `;
 
-                if(this.photo) {
+                if (this.photo) {
 
                     let img = div.querySelector('.message-photo');
                     img.src = this.photo;
@@ -329,7 +322,7 @@ export class Message extends Model {
                 let btnPause = div.querySelector('.audio-pause');
                 let inputRange = div.querySelector('[type = range]');
                 let audioDuration = div.querySelector('.message-audio-duration')
-                
+
                 // Quando o audio está pronto para tocar
                 audioEL.onloadeddata = e => {
 
@@ -423,22 +416,21 @@ export class Message extends Model {
 
         }
 
-        // Para verificar se a variável está saindo (enviada) ou entrado (recebida)
+
         let className = 'message-in';
 
         if (me) {
 
             className = 'message-out'
 
-            // Temos que adicionar como irmão, ou sejaa, dentro do elemento "pai"
-            // Então nesse caso usaremos o método "parentElement"
+
             div.querySelector('.message-time').parentElement.appendChild(this.getStatusViewElement());
 
         }
 
         div.firstElementChild.classList.add(className);
 
-        // Retornando para quem chamou a div
+
         return div;
 
     }
@@ -462,12 +454,12 @@ export class Message extends Model {
             //Message.upload(file, from).then(snapshot => {
             Message.upload(file, from).then(downloadURL3 => {
 
-                // let downloadFile = snapshot.downloadURL;
+
                 let downloadFile = downloadURL3;
-                
+
 
                 msgRef.set({
-    
+
                     content: downloadFile,
                     size: file.size,
                     fileType: file.type,
@@ -491,108 +483,90 @@ export class Message extends Model {
 
         Message.send(chatId, from, 'document', '').then(msgRef => {
 
-            // Vamos converter o Base64 em arquivo
-            // Base64.toFile(preview).then( filePreview => {
 
-                Message.upload(file, from).then( downloadURL => {
 
-                    let downloadFile = downloadURL;
+            Message.upload(file, from).then(downloadURL => {
 
-                    if(filePreview) {
+                let downloadFile = downloadURL;
 
-                        Message.upload(filePreview, from).then( downloadURL2 => {
+                if (filePreview) {
 
-                            let downloadPreview = downloadURL2;
-    
-                            msgRef.set({
-    
-                                content: downloadFile,
-                                preview: downloadPreview,
-                                filename: file.name,
-                                size: file.size,
-                                fileType: file.type,
-                                status: 'sent',
-                                info
-    
-                            }, {
-                                merge: true
-                            })
-            
-                        })
+                    Message.upload(filePreview, from).then(downloadURL2 => {
 
-                    } else {
+                        let downloadPreview = downloadURL2;
 
                         msgRef.set({
-    
+
                             content: downloadFile,
+                            preview: downloadPreview,
                             filename: file.name,
                             size: file.size,
                             fileType: file.type,
                             status: 'sent',
+                            info
 
                         }, {
                             merge: true
                         })
 
-                    }
+                    })
 
-                })
+                } else {
 
-            //})
+                    msgRef.set({
+
+                        content: downloadFile,
+                        filename: file.name,
+                        size: file.size,
+                        fileType: file.type,
+                        status: 'sent',
+
+                    }, {
+                        merge: true
+                    })
+
+                }
+
+            })
+
 
         });
 
     }
 
     static sendImage(chatId, from, file) {
- 
+
         return new Promise((s, f) => {
- 
+
             let uploadTask = Firebase.hd().ref(from).child(Date.now() + '_' + file.name).put(file);
- 
+
             uploadTask.on('state_changed', e => {
- 
+
                 // console.info('upload', e);
- 
+
             }, err => {
                 console.error(err)
             }, () => {
- 
+
                 uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
                     Message.send(
-                        chatId, 
-                        from, 
-                        'image', 
-                        downloadURL                    
+                        chatId,
+                        from,
+                        'image',
+                        downloadURL
                     ).then(() => {
                         s();
                     });
                 });
-         
+
             });
- 
+
         });
- 
+
     }
 
-    // **************** ANTES DA CORREÇÃO ************************** /
-    // static sendImage(chatId, from, file) {
-    //     return new Promise ((resolve, reject) => {
-    //         Message.upload(file, from).then( snapshot => {
-    //             Message.send(
-    //                 chatId, 
-    //                 from, 
-    //                 'image', 
-    //                 snapshot.downloadURL
-    //             ).then(() => {
-    //                 resolve();
-    //             });
-    //         })
-    //     });
-    // }
-    // **************** ANTES DA CORREÇÃO ************************** /
 
-    static send(chatId, from, type, content){
+    static send(chatId, from, type, content) {
 
         return new Promise((resolve, reject) => {
 
@@ -603,29 +577,26 @@ export class Message extends Model {
                 status: 'wait',
                 type,
                 from
-    
+
             }).then(result => {
 
                 let docRef = result.parent.doc(result.id)
 
-                // Vamos alterar a referencia da mensagem
-                // Se já estamos dentro dela, basta fazer o "SET"
                 docRef.set({
 
                     status: 'sent'
 
                 },
-                    // Precisamos fazer esse merge para não perder
-                    // os outros conteúdos da mensagem
+
                     {
 
                         merge: true
 
-                }).then(()=>{
+                    }).then(() => {
 
-                    resolve(docRef);
+                        resolve(docRef);
 
-                });
+                    });
 
             });
 
@@ -633,12 +604,12 @@ export class Message extends Model {
 
     }
 
-    static getRef(chatId){
+    static getRef(chatId) {
 
         return Firebase.db()
-                .collection('chats')
-                .doc(chatId)
-                .collection('message'); 
+            .collection('chats')
+            .doc(chatId)
+            .collection('message');
 
     }
 
@@ -648,7 +619,7 @@ export class Message extends Model {
 
         div.className = 'message-status'
 
-        switch(this.status) {
+        switch (this.status) {
 
             case 'wait':
                 div.innerHTML = `
