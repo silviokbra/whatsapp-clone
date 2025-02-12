@@ -79,7 +79,6 @@ export class WhatsAppController {
 
                     if (data.photo) {
 
-
                         let photo = this.el.imgPanelEditProfile;
                         photo.src = data.photo;
 
@@ -94,7 +93,6 @@ export class WhatsAppController {
 
                     this.initContacts();
                 });
-
 
                 this._user.name = response.user.displayName;
                 this._user.email = response.user.email;
@@ -111,9 +109,7 @@ export class WhatsAppController {
             });
     }
 
-
     initContacts() {
-
 
         this._user.on('contactschange', docs => {
             
@@ -216,7 +212,6 @@ export class WhatsAppController {
             this._active = false;
         });
 
-
         this.el.inputSearchContacts.on('keyup', e => {
 
             if (this.el.inputSearchContacts.value.length > 0) {
@@ -282,7 +277,6 @@ export class WhatsAppController {
                 this.el.btnSavePanelEditProfile.disabled = false;
             });
         });
-
 
         this.el.btnNewContact.on('click', e => {
             this.closeAllLeftPanels();
@@ -424,7 +418,7 @@ export class WhatsAppController {
                 canvas.height = picture.height;
 
                 context.translate(picture.width, 0);
-                context.scale(-1, 1); // inverte a imagem
+                context.scale(-1, 1);
 
                 context.drawImage(picture, 0, 0, canvas.width, canvas.height);
 
